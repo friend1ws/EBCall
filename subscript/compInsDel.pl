@@ -79,15 +79,13 @@ while(<IN>) {
     my $key = join("\t", @F[0 .. 2]);
     my $var = $F[4];
     my $depth = $F[3];
-    
-    if (exists $ID2vars{$key} and ($F[5] + $F[6]) / $depth < $MAX_NORMAL_ALLELE_FREQ) {
+   
+    if (exists $ID2vars{$key}->{$var} and ($F[5] + $F[6]) / $depth < $MAX_NORMAL_ALLELE_FREQ) {
  
-       foreach my $var (keys %{$ID2vars{$key}}) {
-           $ID2vars{$key}->{$var}->[5] = $F[5];
-           $ID2vars{$key}->{$var}->[7] = $F[6];
-       }
+        $ID2vars{$key}->{$var}->[5] = $F[5];
+        $ID2vars{$key}->{$var}->[7] = $F[6];
     } else {
-        delete $ID2vars{$key};
+        delete $ID2vars{$key}->{$var};
     }
 
 
@@ -100,7 +98,9 @@ foreach my $key (sort chrpos keys %ID2vars) {
 
     foreach my $var (sort keys %{$ID2vars{$key}}) {
         my @tmpBases = @{$ID2vars{$key}->{$var}};
-        print $key . "\t" . $var . "\t" . join(",", @tmpBases[0 .. 3]) . "\t" . join(",", @tmpBases[4 .. 7]) . "\n";
+        if ($tmpBases[4] > 0 || $tmpBases[6] > 0) {
+            print $key . "\t" . $var . "\t" . join(",", @tmpBases[0 .. 3]) . "\t" . join(",", @tmpBases[4 .. 7]) . "\n";
+        }
     }
 }
 

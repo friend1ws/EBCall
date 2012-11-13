@@ -4,9 +4,11 @@ use strict;
 
 my $input_mut = $ARGV[0];
 my $ref_list = $ARGV[1];
-
 my $insdel = $ARGV[2]; # 1: insertion, 2: deletion
 my $TH_MAP = $ARGV[3];
+my $OUTPUT_DIR =$ARGV[4];
+my $PATH_TO_SAMTOOLS =$ARGV[5];
+my $TEMP_FILE = $OUTPUT_DIR ."/temp.indel.txt";
 
 my @refList = ();
 open(IN, $ref_list) || die "cannot open $!";
@@ -32,17 +34,21 @@ while(<IN>) {
         die "the index for insertion or deletion is wrongly specified.\n";
     }
 
-    system("echo -n > temp.base.txt");
+    system("echo -n > " . $TEMP_FILE);
     for (my $i = 0; $i <= $#refList; $i++) {
-        system("samtools mpileup -q " . $TH_MAP . " -r " . $region . " " . $refList[$i] . " >> temp.base.txt");
+        system($PATH_TO_SAMTOOLS ."/samtools mpileup -q ". $TH_MAP ." -r ". $region ." ". $refList[$i] ." >> ". $TEMP_FILE);
     }
 
     $DB::single = 1;
     my @refInfo = ();
-    open(IN2, "temp.base.txt") || die "cannot open $!";
+    open(IN2, $TEMP_FILE) || die "cannot open $!";
     while(<IN2>) {
         s/[\r\n\"]//g;
         push @refInfo, &getInDelInfo($_, $var);
+    }
+    my $count = @refInfo;
+    for (;$count < @refList; $count++) {
+        push @refInfo, "0,0,0,0";
     }
 
     print join("\t", @F) . "\t" . join("\t", @refInfo) . "\n";

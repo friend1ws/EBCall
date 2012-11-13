@@ -111,6 +111,7 @@ for (i in 1:nrow(infoData)) {
             }
         }
 
+
 		misRatio_tum <- (tumBases[2] + tumBases[4]) / (tumBases[1] + tumBases[3]);
 		misRatio_nor <- (norBases[2] + norBases[4]) / (norBases[1] + norBases[3]);
 
@@ -118,7 +119,7 @@ for (i in 1:nrow(infoData)) {
         alt_tum <- tumBases[2] + tumBases[4];
         ref_nor <- (norBases[1] + norBases[3]) - (norBases[2] + norBases[4]);
         alt_nor <- norBases[2] + norBases[4]; 
-
+   
         Fmatrix <- matrix(as.integer(c(alt_tum, alt_nor, ref_tum, ref_nor)), 2, 2);
         fisPV <- max(0, -log10(fisher.test(Fmatrix)$p.value));
 		

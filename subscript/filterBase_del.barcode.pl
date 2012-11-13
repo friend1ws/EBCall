@@ -1,35 +1,34 @@
 use List::Util qw(max);
 
+my $INPUT = $ARGV[0];
+my $MIN_NORMAL_DEPTH = $ARGV[1];
 
-
-open(IN, $ARGV[0]) || die "cannot open $!";
-# print "chr" . "\t" . "pos" . "\t" . "ref" . "\t" . "depth" . "\t" . "A" . "\t". "C" . "\t" . "G" . "\t" . "T" . "\t" . "mis-match" . "\n"; 
+open(IN, $INPUT) || die "cannot open $!";
 while(<IN>) {
 
-	s/[\r\n]//g;
-	@curRow = split("\t", $_);
+  s/[\r\n]//g;
+  @curRow = split("\t", $_);
 
-    	$depth = $curRow[3]; 
+  $depth = $curRow[3]; 
     
-	if ($depth > 9) {
+  if ($depth >= $MIN_NORMAL_DEPTH) {
 
-		$start = $curRow[1] + 1;
-		$end = $curRow[1] + length($curRow[4]);
+    $start = $curRow[1] + 1;
+    $end = $curRow[1] + length($curRow[4]);
 
-		$misNum = $curRow[5] + $curRow[6];
-		$misRate = ($misNum / $depth);
+    $misNum = $curRow[5] + $curRow[6];
+    $misRate = ($misNum / $depth);
 
+    if ($misRate > 0.07) {
 
-        	if ($misRate > 0.07) {
-
-	    		# ratio of mismatch bases in each strand
-		    	##########
-			    $sratio = $curRow[5] / ($curRow[5] + $curRow[6]);
+      # ratio of mismatch bases in each strand
+      ##########
+      $sratio = $curRow[5] / ($curRow[5] + $curRow[6]);
             	
-            	print $curRow[0] . "\t" . $start . "\t" . $end . "\t" . $curRow[4] . "\t" . "-" . "\t" . $depth . "\t" . $misNum . "\t"  . $misRate . "\t" . $sratio . "\n";
+      print $curRow[0] . "\t" . $start . "\t" . $end . "\t" . $curRow[4] . "\t" . "-" . "\t" . $depth . "\t" . $misNum . "\t"  . $misRate . "\t" . $sratio . "\n";
 
-        	}
-    	}
+    }
+  }
 }
 close(IN);
 
