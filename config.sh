@@ -1,8 +1,8 @@
 # path to the reference genome
-PATH_TO_REF=/home/kchiba/testEbKekka/hg19.fasta
+PATH_TO_REF=/home/your_username/ref/hg19.fasta
 
 # path to samtols
-PATH_TO_SAMTOOLS=/home/kchiba/exome/bin/samtools-0.1.18
+PATH_TO_SAMTOOLS=/home/your_username/bin/samtools-0.1.18
 
 # path to R
 PATH_TO_R=/usr/local/bin
