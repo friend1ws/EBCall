@@ -1,4 +1,3 @@
-
 PILEUP_2_BASE_SRCS += \
 subscript/Pileup2Base.cpp \
 subscript/InStream.cpp
@@ -30,4 +29,3 @@ CompBase:
 	g++ -Wall -o3 -o $(COMP_BASE_OBJS) $(COMP_BASE_SRCS)
 	@echo 'Finished building target: $@'
 	@echo ' '
-
