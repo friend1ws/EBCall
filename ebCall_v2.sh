@@ -42,7 +42,7 @@ check_file_exists ${REFERENCELIST}
 
 check_mkdir ${OUTPUTPATH}/tmp
 
-exec > >(tee ${OUTPUTPATH}/tmp/command.log)
+# exec > >(tee ${OUTPUTPATH}/tmp/command.log)
 
 
 # pileup the tumor bam file
