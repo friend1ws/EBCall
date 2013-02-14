@@ -36,10 +36,12 @@ while(<IN>) {
 
     system("echo -n > " . $TEMP_FILE);
     for (my $i = 0; $i <= $#refList; $i++) {
-        system($PATH_TO_SAMTOOLS ."/samtools mpileup -q ". $TH_MAP ." -r ". $region ." ". $refList[$i] ." >> ". $TEMP_FILE);
+        my $ret = system($PATH_TO_SAMTOOLS ."/samtools mpileup -q ". $TH_MAP ." -r ". $region ." ". $refList[$i] ." >> ". $TEMP_FILE);
+        if ($ret != 0) {
+           exit $ret; 
+        }
     }
-
-    $DB::single = 1;
+    
     my @refInfo = ();
     open(IN2, $TEMP_FILE) || die "cannot open $!";
     while(<IN2>) {
@@ -83,7 +85,8 @@ sub getInDelInfo {
                  $strand = "-1";
             }
 
-            my $key = join("\t", @curRow[0 .. 3]) . "\t" . $var;
+            # my $key = join("\t", @curRow[0 .. 3]) . "\t" . $var;
+            my $key = "+" . $var;
 
             if (exists $insertion_p{$key} or exists $insertion_n{$key}) {
 
@@ -120,7 +123,9 @@ sub getInDelInfo {
                 $strand = "-1";
             }
 
-            my $key = join("\t", @curRow[0 .. 3]) . "\t" . $var;
+            # my $key = join("\t", @curRow[0 .. 3]) . "\t" . $var;
+            my $key = "-" . $var;
+            
             if (exists $deletion_p{$key} or exists $deletion_n{$key}) {
 
                 if ($strand == "1") {
@@ -180,16 +185,31 @@ sub getInDelInfo {
         my $misNum_p = 0;  
         my $misNum_n = 0;      
         if ($insdel == 1) {
-            $misNum_p = exists $insertion_p{$_[1]} ? $insertion_p{$_[1]} : 0;
-            $misNum_n = exists $insertion_n{$_[1]} ? $insertion_n{$_[1]} : 0;
-        } elsif ($insdel == 2) {
-            $misNum_p = exists $deletion_p{$_[1]} ? $deletion_p{$_[1]} : 0;
-            $misNum_n = exists $deletion_n{$_[1]} ? $deletion_n{$_[1]} : 0;
+            # $misNum_p = exists $insertion_p{$_[1]} ? $insertion_p{$_[1]} : 0;
+            # $misNum_n = exists $insertion_n{$_[1]} ? $insertion_n{$_[1]} : 0;
+        
+           # conservative evaluation
+           foreach my $key (keys %insertion_p) {
+               $misNum_p = $misNum_p + $insertion_p{$key};
+           }
+           foreach my $key (keys %insertion_n) {
+               $misNum_n = $misNum_n + $insertion_n{$key};
+           }
+        }
+        elsif ($insdel == 2) {
+            # $misNum_p = exists $deletion_p{$_[1]} ? $deletion_p{$_[1]} : 0;
+            # $misNum_n = exists $deletion_n{$_[1]} ? $deletion_n{$_[1]} : 0;
+           
+            # conservative evaluation
+            foreach my $key (keys %deletion_p) {
+                $misNum_p = $misNum_p + $deletion_p{$key};
+            }
+            foreach my $key (keys %deletion_n) {
+                $misNum_n = $misNum_n + $deletion_n{$key};
+            }
         }
 
         return $depth_p . "," . $misNum_p . "," . $depth_n . "," . $misNum_n;
-
-
     }
 
 }
