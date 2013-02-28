@@ -45,7 +45,7 @@ while(<IN>) {
     my @refInfo = ();
     open(IN2, $TEMP_FILE) || die "cannot open $!";
     while(<IN2>) {
-        s/[\r\n\"]//g;
+        s/[\r\n]//g;
         push @refInfo, &getInDelInfo($_, $var);
     }
     my $count = @refInfo;
@@ -158,7 +158,9 @@ sub getInDelInfo {
         # for debugging !!
         if (length($curRow[4]) != length($curRow[5])) {
             print "something is wrong!!!\n";
-            print length($curRow[4]) . "\t" . length($curRow[5]) . "\n";
+            # print length($curRow[4]) . "\t" . length($curRow[5]) . "\n";
+            print $curRow[0] ."\t". $curRow[1] ."\t". $curRow[2] ."\t". $curRow[3] ."\t". length($curRow[4]) . "\t" . length($curRow[5]) . "\n";
+            exit 1;
         }
 
         my %base2qual = ();
