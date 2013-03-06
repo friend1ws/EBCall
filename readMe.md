@@ -59,6 +59,10 @@ We recommend that at least 10 normal samples which are not contaminated by cance
 How to run
 ---
 
+Compile C++ programs
+
+	$ make
+
 Just type the following command
 
 	$ sh ebCall.sh <path to the target tumor bam file> <path to the target normal bam file> <path to the output directory> <path to the text file of the list for normal reference samples>
