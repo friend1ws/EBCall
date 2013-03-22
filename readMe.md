@@ -65,7 +65,7 @@ Compile C++ programs
 
 Just type the following command
 
-	$ sh ebCall.sh <path to the target tumor bam file> <path to the target normal bam file> <path to the output directory> <path to the text file of the list for normal reference samples>
+	$ sh ebCall_v2.sh <path to the target tumor bam file> <path to the target normal bam file> <path to the output directory> <path to the text file of the list for normal reference samples>
 
 Then you will get the output under the specified output directory.
 
