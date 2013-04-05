@@ -89,12 +89,20 @@ The format of the result is suitable for adding annotation by annovar.
 
 Test run
 ----------
-We provide a set of test data files and the result file. Type the following command after setup EBCall and compiling C++ programs.
+We provide a set of test data files in the EBCall-master/testdata directory and the result file in the EBCall-master/testresult directory.   
+Edit EBCall/testdata/list_normal_sample.txt. Please adjust the paths to the EBCall-master directory.
+
+	/home/your_username/EBCall-master/testdata/normalreference1.bam
+	/home/your_username/EBCall-master/testdata/normalreference2.bam
+	...
+	/home/your_username/EBCall-master/testdata/normalreference10.bam
+
+Type the following command after setup EBCall and compiling C++ programs. 
 
 	sh ebCall_v2.sh testdata/tumor.bam testdata/normal.bam testout testdata/list_normal_sample.txt
+	
+Result is stored under the testout directory. It is recommended to open it using Excell on your PC.  
 
-Result is in the EBCall/testresult directory. It is recommended to open it using Excell on your PC.  
-  
 
 Copyright
 ----------
