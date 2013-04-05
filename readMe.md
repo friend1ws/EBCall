@@ -89,7 +89,7 @@ The format of the result is suitable for adding annotation by annovar.
 
 Test run
 ----------
-We provide a set of test data files in the EBCall-master/testdata directory and the result file in the EBCall-master/testresult directory.   
+We provide a set of test data files in the EBCall-master/testdata directory and the result in the EBCall-master/testresult directory.   
 Edit EBCall/testdata/list_normal_sample.txt. Please adjust the paths to the EBCall-master directory.
 
 	/home/your_username/EBCall-master/testdata/normalreference1.bam
