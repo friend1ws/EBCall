@@ -1,0 +1,10 @@
+/home/kchiba/EBCall-master/sequence/normalreference1.bam
+/home/kchiba/EBCall-master/sequence/normalreference2.bam
+/home/kchiba/EBCall-master/sequence/normalreference3.bam
+/home/kchiba/EBCall-master/sequence/normalreference4.bam
+/home/kchiba/EBCall-master/sequence/normalreference5.bam
+/home/kchiba/EBCall-master/sequence/normalreference6.bam
+/home/kchiba/EBCall-master/sequence/normalreference7.bam
+/home/kchiba/EBCall-master/sequence/normalreference8.bam
+/home/kchiba/EBCall-master/sequence/normalreference9.bam
+/home/kchiba/EBCall-master/sequence/normalreference10.bam
