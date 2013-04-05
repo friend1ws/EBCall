@@ -89,7 +89,7 @@ The format of the result is suitable for adding annotation by annovar.
 
 Test run
 ----------
-We provide a set of test data files and the result file. Type the following command after setup and C++ programs compilation.
+We provide a set of test data files and the result file. Type the following command after setup and compiling C++ programs.
 
 	sh ebCall_v2.sh testdata/tumor.bam testdata/normal.bam testout testdata/list_normal_sample.txt
 
