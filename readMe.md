@@ -93,7 +93,7 @@ We provide a set of test data files and the result file. Type the following comm
 
 	sh ebCall_v2.sh testdata/tumor.bam testdata/normal.bam testout testdata/list_normal_sample.txt
 
-Results is in the EBCall/testresult directory. It is recommended to open it using Excell on your PC.  
+Result is in the EBCall/testresult directory. It is recommended to open it using Excell on your PC.  
   
 
 Copyright
