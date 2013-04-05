@@ -10,8 +10,8 @@ Please mail friend1ws@gmail.com for problems or questions.
 Paper
 ----------
 
-"An empirical Bayesian framework for mutation detection from cancer genome sequencing data", Shiraishi et al., in submission.
-
+"[An empirical Bayesian framework for mutation detection from cancer genome sequencing data](http://nar.oxfordjournals.org/content/early/2013/03/06/nar.gkt126.abstract)", Shiraishi et al.,  
+Nucleic Acids Research (First published online: March 6, 2013)
 
 Dependecy
 ----------
@@ -87,9 +87,20 @@ The format of the result is suitable for adding annotation by annovar.
 **p-value(Fisher)**: the minus logarithm of the p-value by Fisher's exact test  
 **alpha (+starnd),beta (+strand),alpha (-strand),beta(-strand)**: the estimated parameter values of Beta-Binominal sequencing model for that variant.
 
----
+Test run
+----------
+We provide a set of test data files and the result file.
 
-Copyright (c) 2012, Yuichi Shiraishi
+Please do the EBCall after installation.
+
+	sh ebCall_v2.sh testdata/tumor.bam testdata/normal.bam testoutout testdata/list_normal_sample.txt
+
+Results is in the EBCall/testresult directory. It is recommended to open it using Excell on your PC.  
+  
+
+Copyright
+----------
+Copyright (c) 2012, Yuichi Shiraishi, Kenichi Chiba
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
   * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
