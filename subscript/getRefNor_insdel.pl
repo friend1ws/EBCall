@@ -34,7 +34,8 @@ while(<IN>) {
         die "the index for insertion or deletion is wrongly specified.\n";
     }
 
-    system("echo -n > " . $TEMP_FILE);
+    open(TEMP_OUT, ">".$TEMP_FILE);
+    close(TEMP_OUT);
     for (my $i = 0; $i <= $#refList; $i++) {
         my $ret = system($PATH_TO_SAMTOOLS ."/samtools mpileup -q ". $TH_MAP ." -r ". $region ." ". $refList[$i] ." >> ". $TEMP_FILE);
         if ($ret != 0) {

@@ -31,7 +31,8 @@ while(<IN>) {
     my $region = $F[0] . ":" . $F[1] . "-" . $F[1];
     my $var = $F[3];
 
-    system("echo -n > " . $TEMP_FILE);
+    open(TEMP_OUT, ">".$TEMP_FILE);
+    close(TEMP_OUT);
     for (my $i = 0; $i <= $#refList; $i++) {
         system($PATH_TO_SAMTOOLS ."/samtools mpileup -q ". $TH_MAP ." -r ". $region ." ". $refList[$i] ." >> ". $TEMP_FILE);
     }
