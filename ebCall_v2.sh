@@ -138,8 +138,8 @@ fi
 echo "`date '+%Y-%m-%d %H:%M:%S'`"
 if [ ! -s ${OUTPUTPATH}/tmp/temp.tumor_normal.ins.filt.ref ]; then
     echo "make empty file : ${OUTPUTPATH}/tmp/temp.tumor_normal.ins.eb"
-    rm -f > ${OUTPUTPATH}/tmp/temp.tumor_normal.ins.eb
-    touch > ${OUTPUTPATH}/tmp/temp.tumor_normal.ins.eb
+    rm -f ${OUTPUTPATH}/tmp/temp.tumor_normal.ins.eb
+    touch ${OUTPUTPATH}/tmp/temp.tumor_normal.ins.eb
 else
     echo "${PATH_TO_R}/R --vanilla --slave --args ${OUTPUTPATH}/tmp/temp.tumor_normal.ins.filt.ref ${OUTPUTPATH}/tmp/temp.tumor_normal.ins.eb < ${DIR}/subscript/proc_EBcall.R"
     ${PATH_TO_R}/R --vanilla --slave --args ${OUTPUTPATH}/tmp/temp.tumor_normal.ins.filt.ref ${OUTPUTPATH}/tmp/temp.tumor_normal.ins.eb < ${DIR}/subscript/proc_EBcall.R
@@ -149,8 +149,8 @@ fi
 echo "`date '+%Y-%m-%d %H:%M:%S'`"
 if [ ! -s ${OUTPUTPATH}/tmp/temp.tumor_normal.del.filt.ref ]; then
     echo "make empty file : ${OUTPUTPATH}/tmp/temp.tumor_normal.del.eb"
-    rm -f > ${OUTPUTPATH}/tmp/temp.tumor_normal.del.eb
-    touch > ${OUTPUTPATH}/tmp/temp.tumor_normal.del.eb
+    rm -f ${OUTPUTPATH}/tmp/temp.tumor_normal.del.eb
+    touch ${OUTPUTPATH}/tmp/temp.tumor_normal.del.eb
 else
     echo "${PATH_TO_R}/R --vanilla --slave --args ${OUTPUTPATH}/tmp/temp.tumor_normal.del.filt.ref ${OUTPUTPATH}/tmp/temp.tumor_normal.del.eb < ${DIR}/subscript/proc_EBcall.R"
     ${PATH_TO_R}/R --vanilla --slave --args ${OUTPUTPATH}/tmp/temp.tumor_normal.del.filt.ref ${OUTPUTPATH}/tmp/temp.tumor_normal.del.eb < ${DIR}/subscript/proc_EBcall.R
