@@ -4,7 +4,9 @@
 #include <ostream>
 #include <algorithm>
 #include <string.h>
+#include <vector>
 #include "InStream.h"
+using std::vector;
 using std::string;
 using std::map;
 using std::ifstream;
@@ -119,6 +121,17 @@ inline void checkNumString(char *str, int num)
   }
 }
 
+inline vector<string> splittsv(const string &str, const string &delim){
+  vector<string> res;
+  size_t current = 0, found, delimlen = delim.size();
+  while((found = str.find(delim, current)) != string::npos){
+    res.push_back(string(str, current, found - current));
+    current = found + delimlen;
+  }
+  res.push_back(string(str, current, str.size() - current));
+  return res;
+}
+
 int main(int argc, char** argv) {
 
   if (argc <= 7) {
@@ -174,13 +187,20 @@ int main(int argc, char** argv) {
     int iDepthArray[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
     struct LineData line;
-    line.chr = inStream.nextValue();
+    string sline = inStream.nextLine(); 
     if (inStream.eof()) break;
-    line.pos = atoi(inStream.nextValueWithCheck().c_str());
-    line.ref = inStream.nextValueWithCheck();
-    line.depth = atoi(inStream.nextValueWithCheck().c_str());
-    line.bases = inStream.nextValueWithCheck();
-    line.quals = inStream.nextValueWithCheck();
+  
+    vector<string> vCol = splittsv(sline, "\t"); 
+    if (vCol.size() != 6) {
+	    cerr << inStream.getFilename() << " is broken. Malformed in [" << sline << "]." << endl;
+      exit(1);
+    }
+    line.chr = vCol[0];
+    line.pos = atoi(vCol[1].c_str());
+    line.ref = vCol[2];
+    line.depth = atoi(vCol[3].c_str());
+    line.bases = vCol[4];
+    line.quals = vCol[5];
 
     if(line.depth <  minDepth) continue;
 
@@ -221,7 +241,7 @@ int main(int argc, char** argv) {
           transform(key.begin(), key.end(), key.begin(), ToUpper());
           lowerFlg = true;
         } else {
-          cerr << "something is wrong! insertion." << line.chr << " " << line.pos << endl;
+          cerr << "Malformed for insertion in [" << sline << "]" << endl;
           exit(1);
         }
 
@@ -259,7 +279,8 @@ int main(int argc, char** argv) {
           transform(key.begin(), key.end(), key.begin(), ToUpper());
           lowerFlg = true;
         } else {
-          cerr << "something is wrong! deletion." << line.chr << " " << line.pos << endl;
+          cerr << "Malformed for deletion in [" << sline << "]" << endl;
+          exit(1);
         }
 
         if (mapDelStrandP.find(key) == mapDelStrandP.end() || mapDelStrandM.find(key) == mapDelStrandM.end()) {
@@ -299,7 +320,8 @@ int main(int argc, char** argv) {
 
     int baseQualLen = baseQuals.length();
     if (j != baseQualLen) {
-      cerr << "something is wrong!!! " << j << " : " << baseQuals.length() << endl;
+      cerr << "Malformed in [" << sline << "]" << endl;
+      exit(1);
     }
 
     if (!mapInsStrandP.empty()) {

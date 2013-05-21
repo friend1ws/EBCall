@@ -18,6 +18,7 @@ public:
   const string nextValue();
   const string nextValueWithCheck();
   const string nextLine();
+  const string getFilename();
   bool eof();
 };
 
