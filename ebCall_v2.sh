@@ -32,9 +32,16 @@ if [ $# -eq 5 ]; then
   fi
 fi
 
-source ${config}
+conf_dir=`dirname ${config}`
+conf_dir=`echo $(cd ${conf_dir} && pwd)`
+source ${conf_dir}/${config}
 source ${DIR}/utility.sh
 
+if [ -f ${conf_dir}/${config} ]; then
+  echo "${conf_dir}/${config} exists."
+else
+  echo "${conf_dir}/${config} does not exists."
+fi
 
 check_file_exists ${INPUTBAM_TUM}
 check_file_exists ${INPUTBAM_NOR}
