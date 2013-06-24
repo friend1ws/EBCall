@@ -104,6 +104,11 @@ Type the following command after setup EBCall and compiling C++ programs.
 
 Result is stored under the testout directory.
 
+When EBCall goes into error, please download chr11.fa from http://hgdownload.cse.ucsc.edu/goldenPath/hg19/chromosomes/chr11.fa.gz and decompress it.
+Then, onen config.sh and set the path to the chr11.fa.
+
+	# path to the reference genome
+	PATH_TO_REF=/home/your_username/ref/chr11.fa
 
 Copyright
 ----------
