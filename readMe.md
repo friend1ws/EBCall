@@ -90,7 +90,6 @@ The format of the result is suitable for adding annotation by annovar.
 Test run
 ----------
 We provide a set of test data files in the EBCall-master/testdata directory and the result in the EBCall-master/testresult directory.   
-
 Edit EBCall/testdata/list_normal_sample.txt to adjust the paths to the EBCall-master directory.
 
 	/home/your_username/EBCall-master/testdata/normalreference1.bam
@@ -104,11 +103,13 @@ Type the following command after setup EBCall and compiling C++ programs.
 
 Result is stored under the testout directory.
 
-When EBCall goes into error, please download chr11.fa from http://hgdownload.cse.ucsc.edu/goldenPath/hg19/chromosomes/chr11.fa.gz and decompress it.
-Then, onen config.sh and set the path to the chr11.fa.
+When EBCall goes into error, download chr11.fa from http://hgdownload.cse.ucsc.edu/goldenPath/hg19/chromosomes/chr11.fa.gz and decompress it.  
+Then, open config.sh and change the path to the reference genome chr11.fa.
 
 	# path to the reference genome
 	PATH_TO_REF=/home/your_username/ref/chr11.fa
+
+Please run the test again!
 
 Copyright
 ----------
