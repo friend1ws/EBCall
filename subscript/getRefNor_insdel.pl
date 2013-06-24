@@ -39,7 +39,8 @@ while(<IN>) {
     for (my $i = 0; $i <= $#refList; $i++) {
         my $ret = system($PATH_TO_SAMTOOLS ."/samtools mpileup -q ". $TH_MAP ." -r ". $region ." ". $refList[$i] ." >> ". $TEMP_FILE);
         if ($ret != 0) {
-           exit $ret; 
+           print STDERR "ERROR CODE: ".$ret."\n";
+           exit 1; 
         }
     }
     

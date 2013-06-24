@@ -34,7 +34,11 @@ while(<IN>) {
     open(TEMP_OUT, ">".$TEMP_FILE);
     close(TEMP_OUT);
     for (my $i = 0; $i <= $#refList; $i++) {
-        system($PATH_TO_SAMTOOLS ."/samtools mpileup -q ". $TH_MAP ." -r ". $region ." ". $refList[$i] ." >> ". $TEMP_FILE);
+        my $ret = system($PATH_TO_SAMTOOLS ."/samtools mpileup -q ". $TH_MAP ." -r ". $region ." ". $refList[$i] ." >> ". $TEMP_FILE);
+        if ($ret != 0) {
+          print STDERR "ERROR CODE: ".$ret."\n";
+          exit 1
+        }
     }
 
     # $DB::single = 1;

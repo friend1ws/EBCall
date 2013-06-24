@@ -40,6 +40,19 @@ check_file_exists ${INPUTBAM_TUM}
 check_file_exists ${INPUTBAM_NOR}
 check_file_exists ${REFERENCELIST}
 
+targetfile=${REFERENCELIST}
+cat $targetfile | while read line; do
+  if [ ! -f $line ]; then
+    echo "$line does not exists."
+    echo "Please check $targetfile"
+    exit 1
+  fi
+done
+if [ $? -ne 0 ]; then
+  exit 1
+fi
+
+check_file_exists ${PATH_TO_REF}
 check_mkdir ${OUTPUTPATH}/tmp
 
 # exec > >(tee ${OUTPUTPATH}/tmp/command.log)
@@ -112,14 +125,17 @@ check_error $?
 echo "`date '+%Y-%m-%d %H:%M:%S'`"
 echo "perl ${DIR}/subscript/getRefNor_base.pl ${OUTPUTPATH}/tmp/temp.tumor_normal.base.filt ${REFERENCELIST} ${TH_BASE_QUAL_REF} ${TH_MAPPING_QUAL_REF} ${OUTPUTPATH}/tmp ${PATH_TO_SAMTOOLS} > ${OUTPUTPATH}/tmp/temp.tumor_normal.base.filt.ref"
 perl ${DIR}/subscript/getRefNor_base.pl ${OUTPUTPATH}/tmp/temp.tumor_normal.base.filt ${REFERENCELIST} ${TH_BASE_QUAL_REF} ${TH_MAPPING_QUAL_REF} ${OUTPUTPATH}/tmp ${PATH_TO_SAMTOOLS} > ${OUTPUTPATH}/tmp/temp.tumor_normal.base.filt.ref
+check_error $?
 
 echo "`date '+%Y-%m-%d %H:%M:%S'`"
 echo "perl ${DIR}/subscript/getRefNor_insdel.pl ${OUTPUTPATH}/tmp/temp.tumor_normal.ins.filt ${REFERENCELIST} 1 ${TH_MAPPING_QUAL_REF} ${OUTPUTPATH}/tmp ${PATH_TO_SAMTOOLS} > ${OUTPUTPATH}/tmp/temp.tumor_normal.ins.filt.ref"
 perl ${DIR}/subscript/getRefNor_insdel.pl ${OUTPUTPATH}/tmp/temp.tumor_normal.ins.filt ${REFERENCELIST} 1 ${TH_MAPPING_QUAL_REF} ${OUTPUTPATH}/tmp ${PATH_TO_SAMTOOLS} > ${OUTPUTPATH}/tmp/temp.tumor_normal.ins.filt.ref
+check_error $?
 
 echo "`date '+%Y-%m-%d %H:%M:%S'`"
 echo "perl ${DIR}/subscript/getRefNor_insdel.pl ${OUTPUTPATH}/tmp/temp.tumor_normal.del.filt ${REFERENCELIST} 2 ${TH_MAPPING_QUAL_REF} ${OUTPUTPATH}/tmp ${PATH_TO_SAMTOOLS} > ${OUTPUTPATH}/tmp/temp.tumor_normal.del.filt.ref"
 perl ${DIR}/subscript/getRefNor_insdel.pl ${OUTPUTPATH}/tmp/temp.tumor_normal.del.filt ${REFERENCELIST} 2 ${TH_MAPPING_QUAL_REF} ${OUTPUTPATH}/tmp ${PATH_TO_SAMTOOLS} > ${OUTPUTPATH}/tmp/temp.tumor_normal.del.filt.ref
+check_error $?
 
 
 # caluculate p-value for each candidate by the Beta-binominal sequencing error model 
