@@ -103,13 +103,16 @@ Type the following command after setup EBCall and compiling C++ programs.
 
 Result is stored under the testout directory.
 
-When EBCall goes into error, download chr11.fa from http://hgdownload.cse.ucsc.edu/goldenPath/hg19/chromosomes/chr11.fa.gz and decompress it.  
-Then, open config.sh and change the path to the reference genome chr11.fa.
+*When EBCall goes into error  
+There might be some inconsistencies between the test .bam files and the reference genome you specified.  
+Could you download the reference genome from USCS web site (only chr11 would be enough)  
+http://hgdownload.soe.ucsc.edu/goldenPath/hg19/chromosomes/chr11.fa.gz  
+Then, open config.sh and change the path to the reference genome chr11.fa.  
 
 	# path to the reference genome
 	PATH_TO_REF=/home/your_username/ref/chr11.fa
 
-Please run the test again!
+and please try again.
 
 Copyright
 ----------
