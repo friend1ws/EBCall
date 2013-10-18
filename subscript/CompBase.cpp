@@ -5,9 +5,7 @@
 #include <cstdlib>
 #include <string.h>
 #include <limits>
-#include <vector>
 #include "InStream.h"
-using std::vector;
 using std::string;
 using std::map;
 using std::ifstream;
@@ -70,7 +68,7 @@ map<int, string> bases;
 };
 
 inline int getMisIndex(const int iRef, const int iA, const int iC, const int iG, const int iT) {
-  int misIdx = 0;
+  int misIdx = -1;
   int iMax = 0;
   if (iMax < iA && iRef != 0) { iMax = iA; misIdx = 0; }
   if (iMax < iC && iRef != 1) { iMax = iC; misIdx = 1; }
@@ -114,18 +112,6 @@ inline void checkNumString(char *str, int num)
   }
 }
 
-inline vector<string> splittsv(const string &str, const string &delim){
-  vector<string> res;
-  size_t current = 0, found, delimlen = delim.size();
-  while((found = str.find(delim, current)) != string::npos){
-    res.push_back(string(str, current, found - current));
-    current = found + delimlen;
-  }
-  res.push_back(string(str, current, str.size() - current));
-  return res;
-}
-
-
 inline int getDepth(LineData& line)
 {
   return (line.aP + line.aM + line.cP + line.cM + line.gP + line.gM + line.tP + line.tM);
@@ -161,27 +147,20 @@ inline void outputData(struct LineData& tLine, int misIdx, struct LineData& nLin
 inline struct LineData getLineData(InStream& inStream)
 {
 	struct LineData line;
-  string sline = inStream.nextLine(); 
-  if (inStream.eof()) return line;
-    
-  vector<string> vCol = splittsv(sline, "\t"); 
-  if (vCol.size() != 12) {
-	  cerr << inStream.getFilename() << " is broken. Malformed in [" << sline << "]." << endl;
-    exit(1);
-  }
-  line.chr = vCol[0];
-  line.pos = atoi((vCol[1]).c_str());
-  line.ref = vCol[2];
-  line.depth = atoi((vCol[3]).c_str());
-  line.aP = atoi((vCol[4]).c_str());
-  line.aM = atoi((vCol[5]).c_str());
-  line.cP = atoi((vCol[6]).c_str());
-  line.cM = atoi((vCol[7]).c_str());
-  line.gP = atoi((vCol[8]).c_str());
-  line.gM = atoi((vCol[9]).c_str());
-  line.tP = atoi((vCol[10]).c_str());
-  line.tM = atoi((vCol[11]).c_str());
-  return line;
+    line.chr = inStream.nextValue();
+    if (inStream.eof()) return line;
+    line.pos = atoi((inStream.nextValueWithCheck()).c_str());
+    line.ref = inStream.nextValueWithCheck();
+    line.depth = atoi((inStream.nextValueWithCheck()).c_str());
+    line.aP = atoi((inStream.nextValueWithCheck()).c_str());
+    line.aM = atoi((inStream.nextValueWithCheck()).c_str());
+    line.cP = atoi((inStream.nextValueWithCheck()).c_str());
+    line.cM = atoi((inStream.nextValueWithCheck()).c_str());
+    line.gP = atoi((inStream.nextValueWithCheck()).c_str());
+    line.gM = atoi((inStream.nextValueWithCheck()).c_str());
+    line.tP = atoi((inStream.nextValueWithCheck()).c_str());
+    line.tM = atoi((inStream.nextValueWithCheck()).c_str());
+    return line;
 }
 
 
@@ -243,6 +222,7 @@ int main(int argc, char** argv) {
         int tG = (tLine.gP + tLine.gM);
         int tT = (tLine.tP + tLine.tM);
         int misIdx = getMisIndex(iRef, tA, tC, tG, tT);
+        if (misIdx < 0) continue;
         int tMisNum = getIdxValue(misIdx, tA, tC, tG, tT);
         double tMisRate = getMisRate(tMisNum, tDepth);
         if (tMisRate < minTumorAlleleFreq || tMisNum < minTumorVariantRead) continue;
@@ -273,6 +253,7 @@ int main(int argc, char** argv) {
         int tG = (tLine.gP + tLine.gM);
         int tT = (tLine.tP + tLine.tM);
         int misIdx = getMisIndex(iRef, tA, tC, tG, tT);
+        if (misIdx < 0) continue;
         int tMisNum = getIdxValue(misIdx, tA, tC, tG, tT);
         double tMisRate = getMisRate(tMisNum, tDepth);
         if (tMisRate < minTumorAlleleFreq || tMisNum < minTumorVariantRead) continue;
