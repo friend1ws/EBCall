@@ -70,7 +70,7 @@ map<int, string> bases;
 };
 
 inline int getMisIndex(const int iRef, const int iA, const int iC, const int iG, const int iT) {
-  int misIdx = 0;
+  int misIdx = -1;
   int iMax = 0;
   if (iMax < iA && iRef != 0) { iMax = iA; misIdx = 0; }
   if (iMax < iC && iRef != 1) { iMax = iC; misIdx = 1; }
@@ -243,6 +243,7 @@ int main(int argc, char** argv) {
         int tG = (tLine.gP + tLine.gM);
         int tT = (tLine.tP + tLine.tM);
         int misIdx = getMisIndex(iRef, tA, tC, tG, tT);
+        if (misIdx < 0) continue;
         int tMisNum = getIdxValue(misIdx, tA, tC, tG, tT);
         double tMisRate = getMisRate(tMisNum, tDepth);
         if (tMisRate < minTumorAlleleFreq || tMisNum < minTumorVariantRead) continue;
@@ -273,6 +274,7 @@ int main(int argc, char** argv) {
         int tG = (tLine.gP + tLine.gM);
         int tT = (tLine.tP + tLine.tM);
         int misIdx = getMisIndex(iRef, tA, tC, tG, tT);
+        if (misIdx < 0) continue;
         int tMisNum = getIdxValue(misIdx, tA, tC, tG, tT);
         double tMisRate = getMisRate(tMisNum, tDepth);
         if (tMisRate < minTumorAlleleFreq || tMisNum < minTumorVariantRead) continue;
