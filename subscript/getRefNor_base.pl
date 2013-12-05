@@ -34,7 +34,8 @@ while(<IN>) {
     open(TEMP_OUT, ">".$TEMP_FILE);
     close(TEMP_OUT);
     for (my $i = 0; $i <= $#refList; $i++) {
-        my $ret = system($PATH_TO_SAMTOOLS ."/samtools mpileup -q ". $TH_MAP ." -r ". $region ." ". $refList[$i] ." >> ". $TEMP_FILE);
+        my $ret = system($PATH_TO_SAMTOOLS ."/samtools mpileup -q ". $TH_MAP ." -r ". $region ." -Q 0 ". $refList[$i] ." >> ". $TEMP_FILE);
+        # my $ret = system($PATH_TO_SAMTOOLS ."/samtools mpileup -q ". $TH_MAP ." -r ". $region ." ". $refList[$i] ." >> ". $TEMP_FILE);
         if ($ret != 0) {
           print STDERR "ERROR CODE: ".$ret."\n";
           exit 1
@@ -212,6 +213,9 @@ sub getBaseInfo {
         #     print $del . "\t" . $deletion_p{$del} . "\t" . $deletion_n{$del} . "\n";
         # }
 
+    }
+    else {
+        return "0,0,0,0";
     }
 
 }
