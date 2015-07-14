@@ -49,8 +49,3 @@ bool InStream::eof() {
   return m_stream.eof();
 }
 
-// get file name
-const string InStream::getFilename() {
-  return m_filename;
-}
-

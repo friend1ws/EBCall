@@ -8,7 +8,44 @@ my $insdel = $ARGV[2]; # 1: insertion, 2: deletion
 my $TH_MAP = $ARGV[3];
 my $OUTPUT_DIR =$ARGV[4];
 my $PATH_TO_SAMTOOLS =$ARGV[5];
-my $TEMP_FILE = $OUTPUT_DIR ."/temp.indel.txt";
+
+my $TEMP_BED = $OUTPUT_DIR;
+my $TEMP_FILE = $OUTPUT_DIR;
+
+if ($insdel == 1) {
+    $TEMP_BED = $TEMP_BED . "/temp.ins.bed";
+    $TEMP_FILE = $TEMP_FILE . "/temp.ins.txt";
+} elsif ($insdel == 2) {
+    $TEMP_BED = $TEMP_BED . "/temp.del.bed";
+    $TEMP_FILE = $TEMP_FILE . "/temp.del.txt";
+} else {
+    die "the index for insertion or deletion is wrongly specified.\n";
+}
+
+my %pos2var = ();
+open(TEMP_BED, ">" . $TEMP_BED) || die "cannot open $!";
+open(IN, $input_mut) || die "cannot open $!";
+while(<IN>) {
+    s/[\r\n\"]//g;
+    my @F = split("\t", $_);
+
+    my $var = $F[3];
+    if ($insdel == 1) {
+        $var = "+" . $var;
+    } elsif ($insdel == 2) {
+        $var = "-" . $var;
+    } else {
+        die "the index for insertion or deletion is wrongly specified.\n";
+    }
+    if (exists $pos2var{$F[0] . "\t" . $F[1]}) {
+        $pos2var{$F[0] . "\t" . $F[1]} = $pos2var{$F[0] . "\t" . $F[1]} . "\t" . $var;
+    } else {
+        $pos2var{$F[0] . "\t" . $F[1]} = $var;
+    }
+
+    print TEMP_BED $F[0] . "\t" . ($F[1] - 1) . "\t" . $F[1] . "\n";
+}
+close(TEMP_BED);
 
 my @refList = ();
 open(IN, $ref_list) || die "cannot open $!";
@@ -18,12 +55,43 @@ while(<IN>) {
 }
 close(IN);
 
+my %key2refInfo = ();
+for (my $i = 0; $i <= $#refList; $i++) {
+    # my $ret = system($PATH_TO_SAMTOOLS . "/samtools mpileup -A -B -d10000000 -q " . $TH_MAP . " -l " . $TEMP_BED . " -Q 0 " . $refList[$i] . " >> " . $TEMP_FILE . "." . $i);
+    my $ret = system($PATH_TO_SAMTOOLS . "/samtools mpileup -B -d10000000 -q " . $TH_MAP . " -l " . $TEMP_BED . " -Q 0 " . $refList[$i] . " >> " . $TEMP_FILE . "." . $i);
+    if ($ret != 0) {
+      print STDERR "ERROR CODE: ".$ret."\n";
+      exit 1
+    }
+    open(IN, $TEMP_FILE . "." . $i) || die "cannot open $!";
+    while(<IN>) {
+        s/[\r\n]//g;
+        my @F = split("\t", $_);
+        my $vars = $pos2var{$F[0] . "\t" . $F[1]};
+        if ($vars eq "") {
+            print "At the key:\n";
+            print join("\t", @F) . "\n";
+            die "No variant extracted. Something is wrong.\n";
+        }
+
+        foreach my $var (split("\t", $vars)) {
+
+            my $key = $F[0] . "\t" . $F[1] . "\t" . $var;
+            if (not exists $key2refInfo{$key}) {
+                $key2refInfo{$key} = [ ("0,0,0,0") x ($#refList + 1) ];
+            }
+            $key2refInfo{$key}->[$i] = &getInDelInfo($_, $var);
+            # print $key . "\t" . $key2refInfo{$key}->[$i] . "\n";
+        }
+    }
+}
+
+$DB::single = 1;
+
 open(IN, $input_mut) || die "cannot open $!";
 while(<IN>) {
     s/[\r\n\"]//g;
     my @F = split("\t", $_);
-
-    my $region = $F[0] . ":" . $F[1] . "-" . $F[1];
 
     my $var = $F[3];
     if ($insdel == 1) {
@@ -34,31 +102,13 @@ while(<IN>) {
         die "the index for insertion or deletion is wrongly specified.\n";
     }
 
-    open(TEMP_OUT, ">".$TEMP_FILE);
-    close(TEMP_OUT);
-    for (my $i = 0; $i <= $#refList; $i++) {
-        my $ret = system($PATH_TO_SAMTOOLS ."/samtools mpileup -q ". $TH_MAP ." -r ". $region ." -Q 0 ". $refList[$i] ." >> ". $TEMP_FILE);
-        # my $ret = system($PATH_TO_SAMTOOLS ."/samtools mpileup -q ". $TH_MAP ." -r ". $region ." ". $refList[$i] ." >> ". $TEMP_FILE);
-        if ($ret != 0) {
-           print STDERR "ERROR CODE: ".$ret."\n";
-           exit 1; 
-        }
-    }
-    
-    my @refInfo = ();
-    open(IN2, $TEMP_FILE) || die "cannot open $!";
-    while(<IN2>) {
-        s/[\r\n]//g;
-        push @refInfo, &getInDelInfo($_, $var);
-    }
-    my $count = @refInfo;
-    for (;$count < @refList; $count++) {
-        push @refInfo, "0,0,0,0";
-    }
-
-    print join("\t", @F) . "\t" . join("\t", @refInfo) . "\n";
+    # print join("\t", @F) . "\n";
+    my $key = $F[0] . "\t" . $F[1] . "\t" . $var;
+    my $refInfo = exists $key2refInfo{$key} ? join("\t", @{$key2refInfo{$key}}) : join("\t", ("0,0,0,0") x ($#refList + 1));
+    print join("\t", @F) . "\t" . $refInfo . "\n";
 }
 close(IN);
+
 
 
 

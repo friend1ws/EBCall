@@ -112,8 +112,13 @@ check_error $?
 # filter candidate of variation between tumor and normal
 ##########
 echo "`date '+%Y-%m-%d %H:%M:%S'`"
-echo "${DIR}/subscript/CompBase.o ${OUTPUTPATH}/tmp/temp.tumor.base ${OUTPUTPATH}/tmp/temp.normal.base ${MIN_TUMOR_DEPTH} ${MIN_NORMAL_DEPTH} ${MIN_TUMOR_VARIANT_READ} ${MIN_TUMOR_ALLELE_FREQ} ${MAX_NORMAL_ALLELE_FREQ} > ${OUTPUTPATH}/tmp/temp.tumor_normal.base.filt"
-${DIR}/subscript/CompBase.o ${OUTPUTPATH}/tmp/temp.tumor.base ${OUTPUTPATH}/tmp/temp.normal.base ${MIN_TUMOR_DEPTH} ${MIN_NORMAL_DEPTH} ${MIN_TUMOR_VARIANT_READ} ${MIN_TUMOR_ALLELE_FREQ} ${MAX_NORMAL_ALLELE_FREQ} > ${OUTPUTPATH}/tmp/temp.tumor_normal.base.filt
+echo "${PATH_TO_SAMTOOLS}/samtools view -H ${BAM} > ${OUTPUTPATH}/tmp/sam.header"
+${PATH_TO_SAMTOOLS}/samtools view -H ${BAM} > ${OUTPUTPATH}/tmp/sam.header
+check_error $?
+
+echo "`date '+%Y-%m-%d %H:%M:%S'`"
+echo "${DIR}/subscript/CompBase.o ${OUTPUTPATH}/tmp/temp.tumor.base ${OUTPUTPATH}/tmp/temp.normal.base ${MIN_TUMOR_DEPTH} ${MIN_NORMAL_DEPTH} ${MIN_TUMOR_VARIANT_READ} ${MIN_TUMOR_ALLELE_FREQ} ${MAX_NORMAL_ALLELE_FREQ} ${OUTPUTPATH}/tmp/sam.header > ${OUTPUTPATH}/tmp/temp.tumor_normal.base.filt"
+${DIR}/subscript/CompBase.o ${OUTPUTPATH}/tmp/temp.tumor.base ${OUTPUTPATH}/tmp/temp.normal.base ${MIN_TUMOR_DEPTH} ${MIN_NORMAL_DEPTH} ${MIN_TUMOR_VARIANT_READ} ${MIN_TUMOR_ALLELE_FREQ} ${MAX_NORMAL_ALLELE_FREQ} ${OUTPUTPATH}/tmp/sam.header > ${OUTPUTPATH}/tmp/temp.tumor_normal.base.filt
 check_error $?
 
 echo "`date '+%Y-%m-%d %H:%M:%S'`"

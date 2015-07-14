@@ -8,12 +8,24 @@ my $TH_BASE = $ARGV[2];
 my $TH_MAP =$ARGV[3];
 my $OUTPUT_DIR =$ARGV[4];
 my $PATH_TO_SAMTOOLS =$ARGV[5];
+my $TEMP_BED = $OUTPUT_DIR . "/temp.base.bed";
 my $TEMP_FILE = $OUTPUT_DIR . "/temp.base.txt";
 
 my $filterQuals = "";
 for (my $i = 33; $i < 33 + $TH_BASE; $i++) {
     $filterQuals .= chr($i);
 }
+
+my %pos2var = ();
+open(TEMP_BED, ">" . $TEMP_BED) || die "cannot open $!";
+open(IN, $input_mut) || die "cannot open $!";
+while(<IN>) {
+    s/[\r\n\"]//g;
+    my @F = split("\t", $_);
+    $pos2var{$F[0] . "\t" . $F[1]} = $F[3];
+    print TEMP_BED $F[0] . "\t" . ($F[1] - 1) . "\t" . $F[1] . "\n";
+}
+close(TEMP_BED);
 
 my @refList = ();
 open(IN, $ref_list) || die "cannot open $!";
@@ -23,46 +35,39 @@ while(<IN>) {
 }
 close(IN);
 
+my %key2refInfo = ();
+for (my $i = 0; $i <= $#refList; $i++) {
+    # my $ret = system($PATH_TO_SAMTOOLS . "/samtools mpileup -A -B -d10000000 -q " . $TH_MAP . " -l " . $TEMP_BED . " -Q 0 " . $refList[$i] . " >> " . $TEMP_FILE . "." . $i);
+    my $ret = system($PATH_TO_SAMTOOLS . "/samtools mpileup -B -d10000000 -q " . $TH_MAP . " -l " . $TEMP_BED . " -Q 0 " . $refList[$i] . " >> " . $TEMP_FILE . "." . $i);
+    if ($ret != 0) {
+      print STDERR "ERROR CODE: ".$ret."\n";
+      exit 1
+    }
+    open(IN, $TEMP_FILE . "." . $i) || die "cannot open $!";
+    while(<IN>) {
+        s/[\r\n]//g;
+        my @F = split("\t", $_);
+        my $var = $pos2var{$F[0] . "\t" . $F[1]};
+        my $key = $F[0] . "\t" . $F[1] . "\t" . $var;
+        if (not exists $key2refInfo{$key}) {
+            $key2refInfo{$key} = [ ("0,0,0,0") x ($#refList + 1) ];
+        }
+        $key2refInfo{$key}->[$i] = &getBaseInfo($_, $var);
+    }
+}
+
+
 open(IN, $input_mut) || die "cannot open $!";
 while(<IN>) {
     s/[\r\n\"]//g;
     my @F = split("\t", $_);
 
-    my $region = $F[0] . ":" . $F[1] . "-" . $F[1];
-    my $var = $F[3];
-
-    open(TEMP_OUT, ">".$TEMP_FILE);
-    close(TEMP_OUT);
-    for (my $i = 0; $i <= $#refList; $i++) {
-        my $ret = system($PATH_TO_SAMTOOLS ."/samtools mpileup -q ". $TH_MAP ." -r ". $region ." -Q 0 ". $refList[$i] ." >> ". $TEMP_FILE);
-        # my $ret = system($PATH_TO_SAMTOOLS ."/samtools mpileup -q ". $TH_MAP ." -r ". $region ." ". $refList[$i] ." >> ". $TEMP_FILE);
-        if ($ret != 0) {
-          print STDERR "ERROR CODE: ".$ret."\n";
-          exit 1
-        }
-    }
-
-    # $DB::single = 1;
-    my @refInfo = ();
-    open(IN2, $TEMP_FILE) || die "cannot open $!";
-    while(<IN2>) {
-        s/[\r\n]//g;
-
-        # if ($_ =~ /HHDGDFHGGIHJBBFF/) {
-        #     $DB::single = 1;
-        # }
-        push @refInfo, &getBaseInfo($_, $var);
-        
-    }
-    my $count = @refInfo;
-    for (;$count < @refList; $count++) {
-        push @refInfo, "0,0,0,0";
-    }
-
-    print join("\t", @F) . "\t" . join("\t", @refInfo) . "\n";
+    $DB::single = 1;
+    my $key = $F[0] . "\t" . $F[1] . "\t" . $F[3];
+    my $refInfo = exists $key2refInfo{$key} ? join("\t", @{$key2refInfo{$key}}) : join("\t", ("0,0,0,0") x ($#refList + 1)); 
+    print join("\t", @F) . "\t" . $refInfo . "\n";
 }
 close(IN);
-
 
 
 sub getBaseInfo {
@@ -188,9 +193,11 @@ sub getBaseInfo {
 
         # print join("\t", @curRow[0 .. 3]) . "\t";
         # print $depth_p . "\t" . $depth_n . "\n";
- 
-        foreach my $base (keys %base2qual) {
-            $base2qual{$base} =~ s/[$filterQuals]//g;
+
+        if ($filterQuals ne "") {    
+            foreach my $base (keys %base2qual) {
+                $base2qual{$base} =~ s/[$filterQuals]//g;
+            }
         }
 
         my $depth_p = length($base2qual{"A"}) + length($base2qual{"C"}) + length($base2qual{"G"}) + length($base2qual{"T"}) + length($base2qual{"N"});
