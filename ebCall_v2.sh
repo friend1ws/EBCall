@@ -112,8 +112,8 @@ check_error $?
 # filter candidate of variation between tumor and normal
 ##########
 echo "`date '+%Y-%m-%d %H:%M:%S'`"
-echo "${PATH_TO_SAMTOOLS}/samtools view -H ${BAM} > ${OUTPUTPATH}/tmp/sam.header"
-${PATH_TO_SAMTOOLS}/samtools view -H ${BAM} > ${OUTPUTPATH}/tmp/sam.header
+echo "${PATH_TO_SAMTOOLS}/samtools view -H ${INPUTBAM_TUM} > ${OUTPUTPATH}/tmp/sam.header"
+${PATH_TO_SAMTOOLS}/samtools view -H ${INPUTBAM_TUM} > ${OUTPUTPATH}/tmp/sam.header
 check_error $?
 
 echo "`date '+%Y-%m-%d %H:%M:%S'`"
