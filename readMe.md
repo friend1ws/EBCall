@@ -82,7 +82,7 @@ The format of the result is suitable for adding annotation by annovar.
 **strandRatio_tumor, strandRatio_normal**: the ratio of variant reads aligned to positive strand for the tumor and normal samples  
 **depth_tumor depth_normal**: sequencing depths for that position for the tumor and normal samples  
 **variantNum_tumor, variantNum_normal**: the number of supporting variant read in the tumor and normal samples  	
-**p-value**: the minus logarithm of p-value of the EBCall. This is a combined value from the two p-values caluculated in positive and negative strands  
+**p-value**: the minus logarithm of p-value of the EBCall. This is a combined value from the two p-values calculated in positive and negative strands  
 **p-value (+strand), p-value (-strand)**: the minus logarithm of p-value of the EBCall for positive and negative strand, respectively  
 **p-value(Fisher)**: the minus logarithm of the p-value by Fisher's exact test  
 **alpha (+starnd),beta (+strand),alpha (-strand),beta(-strand)**: the estimated parameter values of Beta-Binominal sequencing model for that variant.
