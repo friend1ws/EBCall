@@ -5,7 +5,7 @@ EBCall is a software package for somatic mutation detection (including InDels). 
 
 Please mail friend1ws@gmail.com for problems or questions.
 
-
+Please also see [EBFilter package ](https://github.com/Genomon-Project/EBFilter)!
 
 Paper
 ----------
